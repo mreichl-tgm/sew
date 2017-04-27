@@ -1,25 +1,43 @@
 \documentclass[a4paper,11pt]{article}
+
 \usepackage{a4wide}
+\usepackage{microtype}
 \usepackage[utf8]{inputenc}
 \usepackage[ngerman]{babel}
-\usepackage{microtype}
-\usepackage{cmbright}
+\usepackage[default,light,semibold]{sourceserifpro}
 \usepackage[T1]{fontenc}
-\usepackage[marginal, norule, perpage]{footmisc}
+\usepackage{mathtools}
 \usepackage[dvipsnames]{xcolor}
-\usepackage{minted}
+\usepackage[marginal, norule, perpage]{footmisc}
+\usepackage{tabularx}
 \usepackage{graphicx}
 \usepackage{hyperref}
-    
+
+\renewcommand{\thefootnote}{\Roman{footnote}}
+\newcommand{\lskip}{\vspace{1 em} \\}
+
+\def\arraystretch{1.5}
+
+\usepackage{minted}
+
 %settings
 \usemintedstyle{lovelace}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=MidnightBlue,
+  urlcolor=MidnightBlue
+}
 
 %opening
 \title{
-  \Large{Grundlagen Softwareentwicklung} \vskip 2 mm
-  \hrule \vskip 1.2 cm
-  \Huge{Nebenl\"aufigkeit} \vskip 0.5 em
-  \large{Einf\"uhrung und Anwendung in Python}}
+    \begin{center}
+        \Large{Grundlagen Softwareentwicklung}\\
+        \rule{0.5\textwidth}{0.1 mm}
+    \end{center}
+    \vspace{1 em}
+    \huge{Nebenläufigkeit} \vspace{0.5 em} \\
+    \large{Einführung und Anwendung in Python} \vspace{1.5 em}
+}
 \author{Markus Reichl}
 
 \begin{document}
@@ -37,10 +55,9 @@ In der Softwareentwicklung wird jedoch meist nur eine scheinbare Parallelit\"at 
 
 \subsection{Anwendungsbereiche}
 Parallelit\"at wird vor allem dort ben\"otigt wo Aufgaben unabh\"angig voneinander abgearbeitet werden sollen.
-Darunter fallen zum Beispiel: \textit{Benutzereingaben}, \textit{Server}, \textit{Sortieralgorithmen}, ...
+Darunter fallen zum Beispiel: \textit{Benutzereingaben}, \textit{Server}, \textit{Sortieralgorithmen}, \dots
 
 \newpage
-
 \section{Multitasking}
 
 Beim Multitasking werden die verschiedenen Prozesse in so kurzen Abst\"anden aktiviert, dass der Eindruck der Gleichzeitigkeit entsteht.
@@ -61,7 +78,6 @@ Prozesse besitzen einen eigenen Adressraum im Hauptspeicher und bestehen aus min
 Im Gegensatz zum Threading ist Multiprocessing zwar performanter, jedoch ist auch die Kommunikation zwischen den Prozessen aufwendiger.
 
 \newpage
-
 \subsection{Multithreading}
 
 \paragraph{Thread anhand einer Funktion}
@@ -70,6 +86,7 @@ import threading
 
 threading.Thread(target=print, args=('Hello World!',)).start()
 \end{minted}
+
 \begin{flushleft}
 Die k\"urzeste Methode einen neuen Thread zu starten geht \"uber die Klasse \texttt{threading.Thread}.
 Diese \"ubernimmt eine Funktion (\mintinline{python}{target=print}) als Objekt, sowie ihre Parameter (\mintinline{python}{args=('Hello World!',)}) als Argumente.
@@ -81,14 +98,14 @@ Besonders in Python hat sich hier eine andere Variante durchgesetzt, bei welcher
 \paragraph{Thread anhand einer Klasse}
 \begin{minted}[linenos]{python}
 import threading
- 
+
 class MyThread(threading.Thread):
   def __init__(self):
     super().__init__()
-    
+
   def run(self):
     print('Hello World!')
-    
+
 thread = MyThread()
 thread.start()
 \end{minted}
@@ -97,13 +114,12 @@ Die zuvor aufgerufene \texttt{run} Methode wird mit der eigenen Funktionalit\"at
 Anstatt nun ein Objekt der Stammklasse zu instanziieren wird die eigene Klasse verwendet und \"uber \texttt{start()} gestartet.
 
 \newpage
-
 \paragraph{Terminierung}
 \begin{flushleft}
 Sobald ein Thread die \texttt{run} Methode verl\"asst wird dieser automatisch beendet.
 H\"aufig sind jedoch andere Anweisungen vom Ergebnis dieses Threads abh\"angig und sollen auf diese warten.
 \end{flushleft}
-\subparagraph{Join}
+\textbf{Join}\quad
 Die \texttt{join()} Methode der Klasse \texttt{threading.Thread} stellt einen blockierenden Aufruf dar.
 Dieser wird erst beendet sobald der zugeh\"orige Thread geschlossen wird.
 \begin{minted}[linenos, firstnumber=13]{python}
@@ -111,12 +127,11 @@ thread.join()
 
 print('Bye!')
 \end{minted}
-
-\subparagraph{Daemons}
+\textbf{Daemons}\quad
 W\"ahrend einige Threads den Ablauf direkt beeinflussen sind andere nur im Hintergrund t\"atig.
 Diese sollten die Abfertigung des Programms nicht behindern und m\"ussen daher geschlossen werden.\\
 Zu diesem Zweck werden in Python sogenannte \textit{daemonic Threads} verwendet.
-\vskip 0.5 em
+\vspace{0.5 em}
 \begin{minted}[linenos]{python}
 import threading
 
@@ -134,7 +149,7 @@ thread.start()
 \newpage
 
 \subsection{Multiprocessing}
-In Python unterscheidet sich der Aufbau von Threads und Prozessen nur geringf\"ugig, 
+In Python unterscheidet sich der Aufbau von Threads und Prozessen nur geringf\"ugig,
 die Grundstruktur bleibt also gleich mit dem einzigen Unterschied, dass \texttt{multiprocessing.Process} anstatt von \texttt{threading.Thread} verwendet wird.
 
 \paragraph{Prozess anhand einer Funktion}
@@ -147,14 +162,14 @@ multiprocessing.Process(target=print, args=('Hello World!',)).start()
 \paragraph*{Prozess anhand einer Klasse}
 \begin{minted}[linenos]{python}
 import multiprocessing
- 
+
 class MyProcess(multiprocessing.Process):
   def __init__(self):
     super().__init__()
-    
+
   def run(self):
     print('Hello World!')
-    
+
 process = MyProcess()
 process.start()
 \end{minted}
@@ -163,11 +178,11 @@ process.start()
 \begin{flushleft}
 Die Terminierung erfolgt syntaktisch wie gehabt und \"andert sich von der Funktion her nur geringf\"ugig.
 \end{flushleft}
-\subparagraph{Join}
+\textbf{Join}\quad
 \begin{minted}[linenos, firstnumber=13]{python}
 process.join()
 \end{minted}
-\subparagraph{Daemons}
+\textbf{Daemons}\quad
 \begin{minted}[linenos, firstnumber=7]{python}
 process = multiprocessing.Process(target=loop)
 # Mark this process as daemonic
