@@ -1,0 +1,121 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{a4wide}
+\usepackage{microtype}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage[default,light,semibold]{sourceserifpro}
+\usepackage[T1]{fontenc}
+\usepackage{mathtools}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[marginal, norule, perpage]{footmisc}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{minted}
+
+%settings
+\usemintedstyle{lovelace}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=MidnightBlue,
+  urlcolor=MidnightBlue
+}
+
+\renewcommand{\thefootnote}{\Roman{footnote}}
+\def\arraystretch{1.5}
+
+%custom commands
+\newcommand{\lskip}{\vspace{0.5 em} \\}
+
+%preamble
+\title{
+    \huge{Sphinx} \vspace{0.5 em} \\
+    \large{Ein einfacher Einstieg}
+}
+
+\author{Markus Reichl}
+
+\begin{document}
+
+\maketitle
+%\tableofcontents
+% \begin{thebibliography}{9}
+% \end{thebibliography}
+
+\subsection*{Quickstart}
+\begin{minted}{python}
+    # Install
+    $ pip install Sphinx
+    # Quickstart
+    $ sphinx-quickstart
+    # Apidoc
+    $ sphinx-apidoc -o ./docs/source ./package
+    # Build
+    $ sphinx-build -b html ./docs/source ./docs/build
+    # Make
+    $ make html
+\end{minted}
+
+\section*{Erweitert}
+Sphinx ist ein Framework zur Dokumentation von Python Projekten.
+Zur Veranschaulichung wird hier das Projekt \texttt{PyCake} verwendet, welches folgende Struktur aufweist.
+\begin{minted}{python}
+    PyCake/ # Aktuelles Verzeichnis
+        docs/   # Zielverzeichnis der Dokumentation
+        control/
+            control.py
+        view/
+            view.py
+        main.py
+\end{minted}
+Ziel ist es alle Klassen in diesem Projekt zu dokumentieren und als HTML Seite zur Verfügung zu stellen.
+
+\newpage
+\section{Installation}
+Die aktuellste Version von Sphinx kann einfach über pip installiert werden.\footnote{Auf einigen Linux Systemen sind Administrator Rechte notwendig, dazu \mintinline{python}{sudo -H pip install Sphinx}}
+\begin{minted}{python}
+    $ pip install Sphinx
+\end{minted}
+
+\section{Setup}
+Zur Einrichtung von Sphinx für das Projekt
+\begin{minted}{python}
+    $ sphinx-quickstart
+\end{minted}
+Hier werden einige Fragen gestellt, welche zur Erstellung der Konfigurationsdatei \texttt{conf.py} dienen.
+\lskip{}
+Es wird empfohlen folgende Fragen mit Ja (\texttt{y}) zu beantworten.
+\begin{verbatim}
+    Separate source and build directories
+    autodoc: automatically insert docstrings from modules
+    viewcode: include links to the source code of documented Python objects
+    Create Makefile?
+\end{verbatim}
+
+\section{Dokumentation}
+\subsection{Hinzufügen von Modulen}
+Bevor das Projekt dokumentiert werden kann müssen für die einzelnen Module Dateien generiert werden.
+Diese können manuell oder mittels
+\begin{minted}{python}
+    $ sphinx-apidoc -o outputdir packagedir
+\end{minted}
+eingerichtet werden. In unseren Fall würde dieser Ablauf wie folgt aussehen.
+\begin{minted}{python}
+    $ sphinx-apidoc -o ./docs/source .            # Aktuelles Paket -> main.py
+    $ sphinx-apidoc -o ./docs/control ./control   # Control -> control.py
+    $ sphinx-apidoc -o ./docs/view ./view         # View -> view.py
+\end{minted}
+Zusätzlich muss innerhalb der generierten Module der Name des Pakets vor der Modulbezeichnung definiert sein.
+So wird zum Beispiel in der Datei \texttt{control.rst} die Zeile \\
+\texttt{.. automodule:: control} mit \texttt{.. automodule:: control.control} ersetzt.
+
+\subsection{Generierung}
+Zuletzt kann die Dokumentation mittels
+\begin{minted}{python}
+    $ sphinx-build -b html ./docs/source ./docs/build
+    $ make html
+\end{minted}
+als HTML generiert werden.
+
+\end{document}
